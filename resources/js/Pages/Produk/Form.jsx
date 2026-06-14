@@ -22,7 +22,14 @@ export default function Form({ product, categories }) {
     image_file: null,
   });
 
-  const [imagePreview, setImagePreview] = React.useState(product?.image || null);
+  // Normalisasi URL gambar dari server (bisa /storage/... atau sudah full URL)
+  const resolveImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return window.location.origin + path;
+  };
+
+  const [imagePreview, setImagePreview] = React.useState(resolveImageUrl(product?.image) || null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -47,7 +54,7 @@ export default function Form({ product, categories }) {
     <AppLayout header={isEdit ? `Edit Produk: ${product.name}` : 'Tambah Produk Baru'}>
       <Head title={isEdit ? 'Edit Produk' : 'Tambah Produk'} />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto py-6">
         {/* Back Link */}
         <Link
           href={route('admin.products.index')}
