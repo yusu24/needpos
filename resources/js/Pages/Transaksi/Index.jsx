@@ -3,6 +3,7 @@ import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, Eye, AlertTriangle, FileText, Calendar } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/formatters';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ orders, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -25,7 +26,8 @@ export default function Index({ orders, filters }) {
       status: stat,
       payment_method: pay,
       date_from: fromDate,
-      date_to: toDate
+      date_to: toDate,
+      per_page: filters.per_page || 20
     }, {
       preserveState: true,
       replace: true
@@ -236,28 +238,13 @@ export default function Index({ orders, filters }) {
         </div>
 
         {/* Pagination */}
-        {orders.links && orders.links.length > 3 && (
-          <div className="p-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <span className="text-xs text-slate-500">
-              Menampilkan {orders.from}-{orders.to} dari {orders.total} transaksi
-            </span>
-            <div className="flex gap-1">
-              {orders.links.map((link, idx) => (
-                <button
-                  key={idx}
-                  disabled={!link.url}
-                  onClick={() => router.get(link.url)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    link.active 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  } disabled:opacity-50`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <Pagination
+          paginator={orders}
+          filters={filters}
+          routeName="admin.orders.index"
+          entityName="transaksi"
+          color="indigo"
+        />
       </div>
     </AppLayout>
   );

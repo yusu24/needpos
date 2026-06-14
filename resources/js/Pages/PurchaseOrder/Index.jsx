@@ -3,6 +3,7 @@ import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Eye, CheckCircle, Search, Calendar, FileText } from 'lucide-react';
 import debounce from 'lodash/debounce';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ purchaseOrders, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -12,11 +13,11 @@ export default function Index({ purchaseOrders, filters }) {
       debounce((value) => {
         router.get(
           route('admin.purchase-orders.index'),
-          { search: value },
+          { search: value, per_page: filters.per_page || 10 },
           { preserveState: true, replace: true }
         );
       }, 300),
-    []
+    [filters.per_page]
   );
 
   const handleSearchChange = (e) => {
@@ -147,28 +148,13 @@ export default function Index({ purchaseOrders, filters }) {
           </div>
 
           {/* Pagination */}
-          {purchaseOrders.links && purchaseOrders.links.length > 3 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <span className="text-[10px] text-slate-500">
-                Menampilkan {purchaseOrders.from}-{purchaseOrders.to} dari {purchaseOrders.total} Purchase Order
-              </span>
-              <div className="flex gap-1">
-                {purchaseOrders.links.map((link, idx) => (
-                  <button
-                    key={idx}
-                    disabled={!link.url}
-                    onClick={() => router.get(link.url)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                      link.active
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/10'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    } disabled:opacity-50`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <Pagination
+            paginator={purchaseOrders}
+            filters={filters}
+            routeName="admin.purchase-orders.index"
+            entityName="Purchase Order"
+            color="teal"
+          />
         </div>
       </div>
     </AppLayout>

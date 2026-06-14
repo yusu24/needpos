@@ -22,11 +22,12 @@ class StockOpnameController extends Controller
     public function index(Request $request)
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 10), 100);
 
         $opnames = StockOpname::where('outlet_id', $outletId)
             ->with(['user'])
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate($perPage);
 
         // check if there is a draft opname
         $draftOpname = StockOpname::where('outlet_id', $outletId)
@@ -36,6 +37,7 @@ class StockOpnameController extends Controller
         return Inertia::render('Opname/Index', [
             'opnames' => $opnames,
             'draftOpname' => $draftOpname,
+            'filters' => ['per_page' => $perPage],
         ]);
     }
 

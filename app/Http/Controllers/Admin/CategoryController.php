@@ -19,14 +19,17 @@ class CategoryController extends Controller
     public function index(Request $request): Response
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 15), 100);
+
         $categories = Category::forOutlet($outletId)
             ->orderBy('sort_order')
             ->orderBy('name')
-            ->paginate(15)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Kategori/Index', [
             'categories' => $categories,
+            'filters'    => ['per_page' => $perPage],
         ]);
     }
 

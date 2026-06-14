@@ -2,8 +2,9 @@ import React from 'react';
 import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Edit2, Trash2, Tag, Coins } from 'lucide-react';
+import Pagination from '@/Components/Pagination';
 
-export default function Index({ pricelists }) {
+export default function Index({ pricelists, filters = {} }) {
   const handleDelete = (id) => {
     if (confirm('Apakah Anda yakin ingin menghapus pricelist ini?')) {
       router.delete(route('admin.pricelists.destroy', id));
@@ -102,28 +103,13 @@ export default function Index({ pricelists }) {
           </div>
 
           {/* Pagination */}
-          {pricelists.links && pricelists.links.length > 3 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <span className="text-[10px] text-slate-500">
-                Menampilkan {pricelists.from}-{pricelists.to} dari {pricelists.total} pricelist
-              </span>
-              <div className="flex gap-1">
-                {pricelists.links.map((link, idx) => (
-                  <button
-                    key={idx}
-                    disabled={!link.url}
-                    onClick={() => router.get(link.url)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                      link.active
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/10'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    } disabled:opacity-50`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <Pagination
+            paginator={pricelists}
+            filters={filters}
+            routeName="admin.pricelists.index"
+            entityName="pricelist"
+            color="teal"
+          />
         </div>
       </div>
     </AppLayout>

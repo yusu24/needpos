@@ -21,6 +21,7 @@ class UserController extends Controller
     public function index(Request $request): Response
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 15), 100);
 
         $users = User::forOutlet($outletId)
             ->with('roles:id,name')
@@ -30,12 +31,12 @@ class UserController extends Controller
                           ->orWhere('email', 'like', "%{$request->search}%");
                 })
             )
-            ->paginate(15)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Pengguna/Index', [
             'users'   => $users,
-            'filters' => $request->only(['search']),
+            'filters' => $request->only(['search', 'per_page']),
         ]);
     }
 

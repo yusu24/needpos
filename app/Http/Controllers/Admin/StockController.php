@@ -29,6 +29,7 @@ class StockController extends Controller
         $outletId = $request->user()->outlet_id;
 
         $categories = Category::forOutlet($outletId)->active()->get(['id', 'name']);
+        $perPage = min((int) $request->input('per_page', 20), 100);
 
         $stocks = Stock::where('stock.outlet_id', $outletId)
             ->join('products', 'stock.product_id', '=', 'products.id')
@@ -52,13 +53,13 @@ class StockController extends Controller
             ->when($request->category_id, fn ($q) => $q->where('products.category_id', $request->category_id))
             ->when($request->is_low === 'true', fn ($q) => $q->whereRaw('stock.quantity <= stock.min_quantity'))
             ->orderBy('products.name')
-            ->paginate(20)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Stok/Index', [
             'stocks'     => $stocks,
             'categories' => $categories,
-            'filters'    => $request->only(['search', 'category_id', 'is_low']),
+            'filters'    => $request->only(['search', 'category_id', 'is_low', 'per_page']),
         ]);
     }
 
@@ -99,6 +100,7 @@ class StockController extends Controller
     public function movements(Request $request): Response
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 25), 100);
 
         $movements = StockMovement::where('stock_movements.outlet_id', $outletId)
             ->join('products', 'stock_movements.product_id', '=', 'products.id')
@@ -119,12 +121,12 @@ class StockController extends Controller
                 });
             })
             ->latest('stock_movements.created_at')
-            ->paginate(25)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Stok/Movement', [
             'movements' => $movements,
-            'filters'   => $request->only(['type', 'date_from', 'date_to', 'search']),
+            'filters'   => $request->only(['type', 'date_from', 'date_to', 'search', 'per_page']),
         ]);
     }
 }

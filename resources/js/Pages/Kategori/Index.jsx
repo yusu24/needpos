@@ -2,6 +2,7 @@ import React from 'react';
 import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, useForm, router } from '@inertiajs/react';
 import { Plus, Edit2, Trash2, X, Check, Tag } from 'lucide-react';
+import Pagination from '@/Components/Pagination';
 
 const COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#10b981', 
@@ -9,7 +10,7 @@ const COLORS = [
   '#d946ef', '#ec4899', '#64748b'
 ];
 
-export default function Index({ categories }) {
+export default function Index({ categories, filters = {} }) {
   const [editingCategory, setEditingCategory] = React.useState(null);
 
   // Form for Add/Edit
@@ -229,28 +230,13 @@ export default function Index({ categories }) {
             </div>
 
             {/* Simple Pagination */}
-            {categories.links && categories.links.length > 3 && (
-              <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <span className="text-[10px] text-slate-500">
-                  Menampilkan {categories.from}-{categories.to} dari {categories.total} kategori
-                </span>
-                <div className="flex gap-1">
-                  {categories.links.map((link, idx) => (
-                    <button
-                      key={idx}
-                      disabled={!link.url}
-                      onClick={() => router.get(link.url)}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                        link.active 
-                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                          : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                      } disabled:opacity-50`}
-                      dangerouslySetInnerHTML={{ __html: link.label }}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <Pagination
+              paginator={categories}
+              filters={filters}
+              routeName="admin.categories.index"
+              entityName="kategori"
+              color="indigo"
+            />
           </div>
         </div>
       </div>

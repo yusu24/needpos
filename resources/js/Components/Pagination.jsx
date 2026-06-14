@@ -12,7 +12,7 @@ const PER_PAGE_OPTIONS = [10, 25, 50, 100];
  * @param {string} routeName  - The named route for this page (e.g. 'admin.suppliers.index')
  * @param {string} entityName - Human-readable entity name (e.g. 'supplier', 'produk')
  */
-export default function Pagination({ paginator, filters = {}, routeName, entityName = 'data' }) {
+export default function Pagination({ paginator, filters = {}, routeName, entityName = 'data', color = 'indigo' }) {
   if (!paginator) return null;
 
   const perPage = parseInt(filters.per_page || 10);
@@ -43,6 +43,19 @@ export default function Pagination({ paginator, filters = {}, routeName, entityN
   const prevLink = links ? links[0] : null;
   const nextLink = links ? links[links.length - 1] : null;
 
+  // Dynamic color classes
+  const activeBtnClass = color === 'teal' 
+    ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/20' 
+    : color === 'blue' 
+    ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/20' 
+    : 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20';
+
+  const selectFocusClass = color === 'teal' 
+    ? 'focus:border-teal-500' 
+    : color === 'blue' 
+    ? 'focus:border-blue-500' 
+    : 'focus:border-indigo-500';
+
   return (
     <div className="px-4 py-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/50">
       {/* Left: Result info + per-page selector */}
@@ -62,7 +75,7 @@ export default function Pagination({ paginator, filters = {}, routeName, entityN
           <select
             value={perPage}
             onChange={handlePerPageChange}
-            className="px-1.5 py-0.5 text-[10px] font-bold text-slate-700 bg-white border border-slate-200 rounded-md focus:outline-none focus:border-teal-500 cursor-pointer"
+            className={`px-1.5 py-0.5 text-[10px] font-bold text-slate-700 bg-white border border-slate-200 rounded-md focus:outline-none ${selectFocusClass} cursor-pointer`}
           >
             {PER_PAGE_OPTIONS.map(opt => (
               <option key={opt} value={opt}>{opt}</option>
@@ -100,7 +113,7 @@ export default function Pagination({ paginator, filters = {}, routeName, entityN
                 disabled={!link.url}
                 className={`w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                   link.active
-                    ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/20'
+                    ? activeBtnClass
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 } disabled:opacity-40`}
                 dangerouslySetInnerHTML={{ __html: link.label }}

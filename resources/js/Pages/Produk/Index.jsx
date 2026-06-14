@@ -3,6 +3,7 @@ import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Search, Edit2, Trash2, SlidersHorizontal, Package, ShieldCheck } from 'lucide-react';
 import { formatCurrency } from '@/lib/formatters';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ products, categories, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -20,7 +21,8 @@ export default function Index({ products, categories, filters }) {
   const handleFilterChange = (catId = categoryId) => {
     router.get(route('admin.products.index'), {
       search: search,
-      category_id: catId
+      category_id: catId,
+      per_page: filters.per_page || 15
     }, {
       preserveState: true,
       replace: true
@@ -218,28 +220,13 @@ export default function Index({ products, categories, filters }) {
         </div>
 
         {/* Pagination */}
-        {products.links && products.links.length > 3 && (
-          <div className="p-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <span className="text-xs text-slate-500">
-              Menampilkan {products.from}-{products.to} dari {products.total} produk
-            </span>
-            <div className="flex gap-1">
-              {products.links.map((link, idx) => (
-                <button
-                  key={idx}
-                  disabled={!link.url}
-                  onClick={() => router.get(link.url)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    link.active 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  } disabled:opacity-50`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <Pagination
+          paginator={products}
+          filters={filters}
+          routeName="admin.products.index"
+          entityName="produk"
+          color="indigo"
+        />
       </div>
     </AppLayout>
   );

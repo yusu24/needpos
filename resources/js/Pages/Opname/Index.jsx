@@ -2,8 +2,9 @@ import React from 'react';
 import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Plus, Eye, CheckCircle2, ClipboardList } from 'lucide-react';
+import Pagination from '@/Components/Pagination';
 
-export default function Index({ opnames, draftOpname }) {
+export default function Index({ opnames, draftOpname, filters = {} }) {
   const { post, processing } = useForm({
     note: '',
   });
@@ -116,28 +117,13 @@ export default function Index({ opnames, draftOpname }) {
           </div>
 
           {/* Pagination */}
-          {opnames.links && opnames.links.length > 3 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <span className="text-[10px] text-slate-500">
-                Menampilkan {opnames.from}-{opnames.to} dari {opnames.total} opname
-              </span>
-              <div className="flex gap-1">
-                {opnames.links.map((link, idx) => (
-                  <button
-                    key={idx}
-                    disabled={!link.url}
-                    onClick={() => router.get(link.url)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                      link.active
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/10'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    } disabled:opacity-50`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <Pagination
+            paginator={opnames}
+            filters={filters}
+            routeName="admin.stock-opnames.index"
+            entityName="opname"
+            color="teal"
+          />
         </div>
       </div>
     </AppLayout>

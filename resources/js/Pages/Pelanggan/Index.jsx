@@ -3,6 +3,7 @@ import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Plus, Edit2, Trash2, Search, User, Gift, Award } from 'lucide-react';
 import debounce from 'lodash/debounce';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ customers, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -12,11 +13,11 @@ export default function Index({ customers, filters }) {
       debounce((value) => {
         router.get(
           route('admin.customers.index'),
-          { search: value },
+          { search: value, per_page: filters.per_page || 10 },
           { preserveState: true, replace: true }
         );
       }, 300),
-    []
+    [filters.per_page]
   );
 
   const handleSearchChange = (e) => {
@@ -158,28 +159,13 @@ export default function Index({ customers, filters }) {
           </div>
 
           {/* Pagination */}
-          {customers.links && customers.links.length > 3 && (
-            <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <span className="text-[10px] text-slate-500">
-                Menampilkan {customers.from}-{customers.to} dari {customers.total} pelanggan
-              </span>
-              <div className="flex gap-1">
-                {customers.links.map((link, idx) => (
-                  <button
-                    key={idx}
-                    disabled={!link.url}
-                    onClick={() => router.get(link.url)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                      link.active
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/10'
-                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                    } disabled:opacity-50`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <Pagination
+            paginator={customers}
+            filters={filters}
+            routeName="admin.customers.index"
+            entityName="pelanggan"
+            color="teal"
+          />
         </div>
       </div>
     </AppLayout>

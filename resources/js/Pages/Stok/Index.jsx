@@ -2,6 +2,7 @@ import React from 'react';
 import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { Search, Plus, SlidersHorizontal, RefreshCw, AlertTriangle, ArrowRightLeft, X, Check } from 'lucide-react';
+import Pagination from '@/Components/Pagination';
 
 export default function Index({ stocks, categories, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -30,7 +31,8 @@ export default function Index({ stocks, categories, filters }) {
     router.get(route('admin.stock.index'), {
       search: search,
       category_id: catId,
-      is_low: lowOnly ? 'true' : ''
+      is_low: lowOnly ? 'true' : '',
+      per_page: filters.per_page || 20
     }, {
       preserveState: true,
       replace: true
@@ -241,28 +243,13 @@ export default function Index({ stocks, categories, filters }) {
         </div>
 
         {/* Pagination */}
-        {stocks.links && stocks.links.length > 3 && (
-          <div className="p-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <span className="text-xs text-slate-500">
-              Menampilkan {stocks.from}-{stocks.to} dari {stocks.total} produk
-            </span>
-            <div className="flex gap-1">
-              {stocks.links.map((link, idx) => (
-                <button
-                  key={idx}
-                  disabled={!link.url}
-                  onClick={() => router.get(link.url)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    link.active 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  } disabled:opacity-50`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <Pagination
+          paginator={stocks}
+          filters={filters}
+          routeName="admin.stock.index"
+          entityName="produk"
+          color="indigo"
+        />
       </div>
 
       {/* Manual Restock / Stock Opname Modal */}

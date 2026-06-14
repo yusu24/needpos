@@ -16,14 +16,16 @@ class PricelistController extends Controller
     public function index(Request $request)
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 10), 100);
 
         $pricelists = Pricelist::where('outlet_id', $outletId)
             ->withCount('items')
             ->orderBy('id', 'desc')
-            ->paginate(10);
+            ->paginate($perPage);
 
         return Inertia::render('Pricelist/Index', [
             'pricelists' => $pricelists,
+            'filters' => ['per_page' => $perPage],
         ]);
     }
 

@@ -26,6 +26,8 @@ class ProductController extends Controller
 
         $categories = Category::forOutlet($outletId)->active()->get();
 
+        $perPage = min((int) $request->input('per_page', 15), 100);
+
         $products = Product::forOutlet($outletId)
             ->with(['category:id,name,color', 'stock'])
             ->when($request->search, fn ($q) =>
@@ -37,13 +39,13 @@ class ProductController extends Controller
             )
             ->when($request->category_id, fn ($q) => $q->where('category_id', $request->category_id))
             ->orderBy('name')
-            ->paginate(15)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Produk/Index', [
             'products'   => $products,
             'categories' => $categories,
-            'filters'    => $request->only(['search', 'category_id']),
+            'filters'    => $request->only(['search', 'category_id', 'per_page']),
         ]);
     }
 

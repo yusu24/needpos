@@ -23,6 +23,7 @@ class CustomerReturnController extends Controller
     {
         $outletId = $request->user()->outlet_id;
         $search = $request->input('search');
+        $perPage = min((int) $request->input('per_page', 10), 100);
 
         $customerReturns = CustomerReturn::where('outlet_id', $outletId)
             ->with(['order', 'customer', 'user'])
@@ -36,12 +37,12 @@ class CustomerReturnController extends Controller
                     });
             })
             ->orderBy('id', 'desc')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('ReturPenjualan/Index', [
             'customerReturns' => $customerReturns,
-            'filters' => ['search' => $search],
+            'filters' => ['search' => $search, 'per_page' => $perPage],
         ]);
     }
 

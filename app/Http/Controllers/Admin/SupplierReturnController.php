@@ -24,6 +24,7 @@ class SupplierReturnController extends Controller
     {
         $outletId = $request->user()->outlet_id;
         $search = $request->input('search');
+        $perPage = min((int) $request->input('per_page', 10), 100);
 
         $supplierReturns = SupplierReturn::where('outlet_id', $outletId)
             ->with(['supplier', 'user'])
@@ -34,12 +35,12 @@ class SupplierReturnController extends Controller
                     });
             })
             ->orderBy('id', 'desc')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('ReturSupplier/Index', [
             'supplierReturns' => $supplierReturns,
-            'filters' => ['search' => $search],
+            'filters' => ['search' => $search, 'per_page' => $perPage],
         ]);
     }
 

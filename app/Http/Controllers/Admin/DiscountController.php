@@ -19,6 +19,7 @@ class DiscountController extends Controller
     public function index(Request $request): Response
     {
         $outletId = $request->user()->outlet_id;
+        $perPage = min((int) $request->input('per_page', 15), 100);
 
         $discounts = Discount::forOutlet($outletId)
             ->when($request->search, fn ($q) =>
@@ -28,12 +29,12 @@ class DiscountController extends Controller
                 })
             )
             ->latest()
-            ->paginate(15)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Diskon/Index', [
             'discounts' => $discounts,
-            'filters'   => $request->only(['search']),
+            'filters'   => $request->only(['search', 'per_page']),
         ]);
     }
 

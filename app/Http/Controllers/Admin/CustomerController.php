@@ -14,6 +14,7 @@ class CustomerController extends Controller
     {
         $outletId = $request->user()->outlet_id;
         $search = $request->input('search');
+        $perPage = min((int) $request->input('per_page', 10), 100);
 
         $customers = Customer::where('outlet_id', $outletId)
             ->when($search, function ($query, $search) {
@@ -22,12 +23,12 @@ class CustomerController extends Controller
                     ->orWhere('email', 'like', "%{$search}%");
             })
             ->orderBy('name', 'asc')
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Pelanggan/Index', [
             'customers' => $customers,
-            'filters' => ['search' => $search],
+            'filters' => ['search' => $search, 'per_page' => $perPage],
         ]);
     }
 

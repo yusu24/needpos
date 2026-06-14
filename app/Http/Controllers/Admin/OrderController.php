@@ -25,6 +25,8 @@ class OrderController extends Controller
     {
         $outletId = $request->user()->outlet_id;
 
+        $perPage = min((int) $request->input('per_page', 20), 100);
+
         $orders = Order::forOutlet($outletId)
             ->with(['user:id,name', 'discount:id,code,name'])
             ->when($request->status, fn ($q) => $q->where('status', $request->status))
@@ -41,12 +43,12 @@ class OrderController extends Controller
                 $q->where('order_number', 'like', "%{$request->search}%")
             )
             ->latest()
-            ->paginate(20)
+            ->paginate($perPage)
             ->withQueryString();
 
         return Inertia::render('Transaksi/Index', [
             'orders'  => $orders,
-            'filters' => $request->only(['status', 'payment_method', 'date_from', 'date_to', 'search']),
+            'filters' => $request->only(['status', 'payment_method', 'date_from', 'date_to', 'search', 'per_page']),
         ]);
     }
 

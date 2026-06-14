@@ -3,6 +3,7 @@ import AppLayout from '@/Components/Layout/AppLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { Search, ArrowLeft, SlidersHorizontal, Calendar } from 'lucide-react';
 import { formatDate } from '@/lib/formatters';
+import Pagination from '@/Components/Pagination';
 
 export default function Movement({ movements, filters }) {
   const [search, setSearch] = React.useState(filters.search || '');
@@ -23,7 +24,8 @@ export default function Movement({ movements, filters }) {
       search: search,
       type: movType,
       date_from: fromDate,
-      date_to: toDate
+      date_to: toDate,
+      per_page: filters.per_page || 25
     }, {
       preserveState: true,
       replace: true
@@ -226,28 +228,13 @@ export default function Movement({ movements, filters }) {
         </div>
 
         {/* Pagination */}
-        {movements.links && movements.links.length > 3 && (
-          <div className="p-5 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <span className="text-xs text-slate-500">
-              Menampilkan {movements.from}-{movements.to} dari {movements.total} mutasi
-            </span>
-            <div className="flex gap-1">
-              {movements.links.map((link, idx) => (
-                <button
-                  key={idx}
-                  disabled={!link.url}
-                  onClick={() => router.get(link.url)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    link.active 
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/10'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  } disabled:opacity-50`}
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <Pagination
+          paginator={movements}
+          filters={filters}
+          routeName="admin.stock.movements"
+          entityName="mutasi"
+          color="indigo"
+        />
       </div>
     </AppLayout>
   );
