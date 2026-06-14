@@ -23,6 +23,19 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, taxRate = 11 
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
 
+  // Format angka dengan titik ribuan untuk tampilan (Indonesia)
+  const formatNumber = (num) => {
+    if (!num && num !== 0) return '';
+    return new Intl.NumberFormat('id-ID').format(num);
+  };
+
+  // Handler input uang — strip non-digit, parse to number, update store
+  const handleAmountChange = (e) => {
+    const raw = e.target.value.replace(/\D/g, ''); // hapus semua selain digit
+    const numeric = raw ? parseInt(raw, 10) : 0;
+    setPaymentAmount(numeric);
+  };
+
   // Quick cash amount shortcuts
   const cashShortcuts = React.useMemo(() => {
     const roundToNext = (val, round) => Math.ceil(val / round) * round;
@@ -185,14 +198,15 @@ export default function PaymentModal({ isOpen, onClose, onSuccess, taxRate = 11 
               )}
             </div>
 
-            {/* Input field */}
+            {/* Input field — format otomatis titik ribuan */}
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg font-black text-slate-400">Rp</span>
               <input
                 disabled={paymentMethod !== 'cash' || loading}
-                type="number"
-                value={paymentAmount || ''}
-                onChange={(e) => setPaymentAmount(e.target.value)}
+                type="text"
+                inputMode="numeric"
+                value={paymentAmount ? formatNumber(paymentAmount) : ''}
+                onChange={handleAmountChange}
                 className="w-full bg-slate-950 border border-slate-800 focus:border-indigo-600 focus:ring-0 focus:outline-none rounded-2xl pl-12 pr-4 py-4 text-xl font-black text-white placeholder-slate-700 disabled:opacity-60"
                 placeholder="0"
               />
