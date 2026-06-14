@@ -17,7 +17,7 @@
 .pos-wrap {
   display: grid;
   grid-template-columns: 72px 1fr 350px;
-  height: calc(100vh - 64px);
+  height: 100vh;
   background: var(--gray-bg);
   overflow: hidden;
   border-top: 1px solid var(--gray-border);
