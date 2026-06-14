@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('outlets', function (Blueprint $table) {
+            $table->text('receipt_footer')->nullable()->after('logo');
+            $table->integer('points_ratio')->default(10000)->after('receipt_footer'); // default: 1 point per 10k IDR
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('outlets', function (Blueprint $table) {
+            $table->dropColumn(['receipt_footer', 'points_ratio']);
+        });
+    }
+};
