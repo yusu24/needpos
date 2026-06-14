@@ -5,7 +5,7 @@ import ProductGrid from '@/Components/POS/ProductGrid';
 import CartPanel from '@/Components/POS/CartPanel';
 import PaymentModal from '@/Components/POS/PaymentModal';
 import ReceiptModal from '@/Components/POS/ReceiptModal';
-import { ShoppingCart, Package, History, BarChart3, Settings } from 'lucide-react';
+import { ShoppingCart, Package, History, Store, LayoutDashboard, LogOut } from 'lucide-react';
 
 export default function Index({ categories, products, outlet }) {
   const [isPaymentOpen, setIsPaymentOpen] = React.useState(false);
@@ -26,9 +26,17 @@ export default function Index({ categories, products, outlet }) {
 
       {/* Main POS Container (Teal Style Grid) */}
       <div className="pos-wrap w-full">
-        {/* Left Teal Sidebar */}
+        {/* Left Sidebar (Dark Slate Theme) */}
         <nav className="sidebar shrink-0 select-none" role="navigation" aria-label="Menu utama">
-          <div className="text-white font-black text-[10px] tracking-widest mb-4 opacity-75 uppercase">POS</div>
+          {/* Outlet Icon replacing POS text */}
+          <div className="flex flex-col items-center justify-center p-2 mb-4 bg-slate-900 border border-slate-800 rounded-xl text-indigo-400 shadow-md shadow-slate-950/50" title={outlet ? outlet.name : 'Outlet'}>
+            <Store size={22} />
+          </div>
+          
+          <Link href={route('dashboard')} className="sidebar-btn" title="Dashboard">
+            <LayoutDashboard size={18} />
+            <span className="sidebar-label">Dashboard</span>
+          </Link>
           
           <Link href={route('kasir.index')} className="sidebar-btn active" title="Kasir">
             <ShoppingCart size={18} />
@@ -45,16 +53,11 @@ export default function Index({ categories, products, outlet }) {
             <span className="sidebar-label">Riwayat</span>
           </Link>
           
-          <Link href={route('admin.reports.index')} className="sidebar-btn" title="Laporan">
-            <BarChart3 size={18} />
-            <span className="sidebar-label">Laporan</span>
-          </Link>
-          
           <div className="flex-grow" />
           
-          <Link href={route('profile.edit')} className="sidebar-btn" title="Pengaturan">
-            <Settings size={18} />
-            <span className="sidebar-label">Setting</span>
+          <Link href={route('logout')} method="post" as="button" className="sidebar-btn text-slate-400 hover:text-rose-400 transition-colors" title="Keluar">
+            <LogOut size={18} />
+            <span className="sidebar-label">Keluar</span>
           </Link>
         </nav>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCartStore } from '@/stores/useCartStore';
 import { formatCurrency } from '@/lib/formatters';
-import { Search } from 'lucide-react';
+import { Search, Clock } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 
 export default function ProductGrid({ products, categories }) {
@@ -14,6 +14,12 @@ export default function ProductGrid({ products, categories }) {
   const [search, setSearch] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
   const [activeCategory, setActiveCategory] = React.useState(null);
+  const [time, setTime] = React.useState(new Date());
+
+  React.useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Debounce search input
   React.useEffect(() => {
@@ -50,7 +56,7 @@ export default function ProductGrid({ products, categories }) {
 
   return (
     <div className="main-area">
-      {/* Top Bar with search and cashier avatar */}
+      {/* Top Bar with search, clock, and cashier avatar */}
       <div className="top-bar">
         <div className="search-box">
           <Search size={16} />
@@ -62,6 +68,15 @@ export default function ProductGrid({ products, categories }) {
             aria-label="Cari produk"
           />
         </div>
+
+        {/* Real-time Clock */}
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shrink-0 select-none">
+          <Clock size={13} className="text-indigo-600" />
+          <span>
+            {time.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+          </span>
+        </div>
+
         <div className="cashier-info select-none">
           <div className="avatar">
             {user.name.substring(0, 2).toUpperCase()}

@@ -25,7 +25,8 @@
 
 /* Left Sidebar in POS screen */
 .sidebar {
-  background: var(--teal);
+  background: #0f172a;
+  border-right: 1px solid #1e293b;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +44,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.65);
+  color: #94a3b8;
   font-size: 9px;
   gap: 4px;
   border: none;
@@ -52,16 +53,21 @@
 }
 
 .sidebar-btn i, .sidebar-btn svg {
-  font-size: 20px;
+  font-size: 18px;
 }
 
-.sidebar-btn.active, .sidebar-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+.sidebar-btn.active {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+.sidebar-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
 }
 
 .sidebar-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
