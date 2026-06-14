@@ -54,7 +54,7 @@ export default function Form({ product, categories }) {
     <AppLayout header={isEdit ? `Edit Produk: ${product.name}` : 'Tambah Produk Baru'}>
       <Head title={isEdit ? 'Edit Produk' : 'Tambah Produk'} />
 
-      <div className="max-w-4xl mx-auto">
+      <div>
         {/* Back Link */}
         <Link
           href={route('admin.products.index')}
